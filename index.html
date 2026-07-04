@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Facebook 广告资料库竞品策略分析</title>
+  <meta name="description" content="Facebook Ad Library competitor strategy report">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">Facebook Ad Library</p>
+      <h1>竞品投放策略分析</h1>
+      <p class="subhead">公开广告资料库样本 · 移动端可读版</p>
+    </div>
+    <a class="download-link" href="data/strategy_report_zh.md">报告原文</a>
+  </header>
+
+  <nav class="nav" aria-label="页面章节">
+    <a href="#summary">总览</a>
+    <a href="#pages">主页矩阵</a>
+    <a href="#cadence">上新节奏</a>
+    <a href="#reuse">素材复用</a>
+    <a href="#landing">落地页</a>
+    <a href="#actions">行动</a>
+  </nav>
+
+  <main>
+    <section id="summary" class="section">
+      <div class="section-head">
+        <p class="eyebrow">Executive Summary</p>
+        <h2>核心判断</h2>
+      </div>
+      <div id="kpi-grid" class="kpi-grid"></div>
+      <div id="takeaways" class="takeaways"></div>
+      <div class="notice" id="caveat"></div>
+    </section>
+
+    <section id="pages" class="section">
+      <div class="section-head">
+        <p class="eyebrow">Page Matrix</p>
+        <h2>主页矩阵和生命周期</h2>
+      </div>
+      <div id="page-list" class="page-list"></div>
+    </section>
+
+    <section id="cadence" class="section">
+      <div class="section-head">
+        <p class="eyebrow">Launch Cadence</p>
+        <h2>上新节奏</h2>
+      </div>
+      <div id="weekly-chart" class="weekly-chart" aria-label="按周上新柱状图"></div>
+    </section>
+
+    <section id="reuse" class="section">
+      <div class="section-head">
+        <p class="eyebrow">Creative Reuse</p>
+        <h2>候选赢家素材和跨主页复用</h2>
+      </div>
+      <div class="control-row">
+        <label for="page-filter">筛选主页</label>
+        <select id="page-filter"></select>
+      </div>
+      <div id="winner-list" class="table-list"></div>
+      <h3>跨主页文案复用</h3>
+      <div id="copy-list" class="table-list compact"></div>
+    </section>
+
+    <section id="landing" class="section">
+      <div class="section-head">
+        <p class="eyebrow">Landing</p>
+        <h2>落地页和产品指向</h2>
+      </div>
+      <div id="app-list" class="app-list"></div>
+    </section>
+
+    <section id="actions" class="section">
+      <div class="section-head">
+        <p class="eyebrow">Next Tracking</p>
+        <h2>建议追踪</h2>
+      </div>
+      <ol class="action-list">
+        <li>优先看 2026-06-29 之后仍活跃的广告，这是当前放量批次。</li>
+        <li>重点拆解同 creativeKey 下同时有活跃和停投版本的素材，这类最像优胜方向。</li>
+        <li>单独跟踪 Amaze 相关广告，判断是换品牌名、换壳，还是新包测试。</li>
+        <li>对比 Appsflyer / iOS 链路，观察是否在扩平台或拆 campaign。</li>
+      </ol>
+      <div id="downloads" class="downloads"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span id="generated"></span>
+    <span>数据来自公开广告资料库样本。</span>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
