@@ -121,6 +121,16 @@ function metric(value, label) {
 function renderWeekly() {
   const max = Math.max(...data.weekly.map((w) => w.adsStarted));
   const root = document.querySelector('#weekly-chart');
+  document.querySelector('#cadence-caveat').replaceChildren(
+    el('p', {
+      text:
+        '这里不是全量素材上新数。这个图只统计 ' +
+        fmt.format(data.kpis.totalAds) +
+        ' 条有开始日期的广告卡片元数据；' +
+        fmt.format(data.material.hdFiles) +
+        ' 是下载到本地的 HD 媒体文件数量，一条广告可能对应视频+图片，也可能多个广告复用同一素材。全量素材库目前有规模和分类口径，但不是每个素材都有可靠用于分周的开始日期。'
+    })
+  );
   const rows = data.weekly.slice().reverse().map((week) => {
     const activeWidth = (week.activeStarted / max) * 100;
     const inactiveWidth = (week.inactiveStarted / max) * 100;
