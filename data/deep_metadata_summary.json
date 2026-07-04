@@ -1,0 +1,22 @@
+{
+  "generatedAt": "2026-07-04T18:16:47.162Z",
+  "rawRows": 693,
+  "browserRows": 495,
+  "adIdRows": 8673,
+  "mergedRows": 9482,
+  "datedRows": 9482,
+  "activeRows": 8692,
+  "earliestStart": "2026-03-17",
+  "latestStart": "2026-07-03",
+  "fullAdIds": 8862,
+  "hdFiles": 11226,
+  "countryRows": 432,
+  "sourceCounts": {
+    "rawRows": 693,
+    "browserRows": 495,
+    "adIdRows": 8673,
+    "mergedRows": 9482,
+    "datedRows": 9482,
+    "activeRows": 8692
+  }
+}

@@ -211,6 +211,97 @@ function renderApps() {
   ])));
 }
 
+function renderDeep() {
+  const deep = data.deep || {};
+  const summary = deep.summary || {};
+  const kpis = [
+    ['已解析卡片', fmt.format(summary.mergedRows || 0), '合并原始样本、浏览器卡片、ad id 补抓'],
+    ['有日期卡片', fmt.format(summary.datedRows || 0), (summary.earliestStart || '-') + ' 至 ' + (summary.latestStart || '-')],
+    ['仍活跃卡片', fmt.format(summary.activeRows || 0), '用于判断当前保留素材'],
+    ['ad id 补抓卡片', fmt.format(summary.adIdRows || 0), '会随缓存补齐继续增长'],
+    ['全量素材 ad id', fmt.format(summary.fullAdIds || data.material.collectedAdIds || 0), '素材规模口径'],
+    ['国家过滤器行', fmt.format(summary.countryRows || (deep.countryRows || []).length || 0), '不是逐条广告国家'],
+  ];
+  document.querySelector('#deep-kpi-grid').replaceChildren(...kpis.map(([label, value, note]) => el('div', { class: 'kpi' }, [
+    el('div', { class: 'label', text: label }),
+    el('div', { class: 'value', text: value }),
+    el('div', { class: 'note', text: note }),
+  ])));
+  document.querySelector('#deep-caveat').replaceChildren(el('p', {
+    text: '这个时间线只统计已经成功解析出 startDate 的广告卡片。全量 8,862 个 ad id 已有素材规模，但不是每个 ad id 都能公开返回完整日期；失效或隐藏的不会硬补。'
+  }));
+
+  document.querySelector('#deep-week-list').replaceChildren(...(deep.timelineWeeks || []).slice(0, 14).map((row) => el('article', { class: 'winner-row' }, [
+    el('div', { class: 'row-top' }, [
+      el('div', { class: 'row-title', text: row.week }),
+      el('div', { class: 'row-count', text: fmt.format(Number(row.adsStarted || 0)) + ' 条' }),
+    ]),
+    el('p', { class: 'row-text', text: '活跃开始 ' + (row.activeStarted || 0) + '，停投开始 ' + (row.inactiveStarted || 0) + '，主页 ' + (row.pageCount || 0) }),
+    el('p', { class: 'row-text', text: '阶段：' + (row.phaseMix || '-') }),
+    el('p', { class: 'row-text', text: '主页：' + (row.topPages || '-') }),
+  ])));
+
+  document.querySelector('#deep-day-list').replaceChildren(...(deep.timelineDays || []).slice(0, 18).map((row) => el('article', { class: 'copy-row' }, [
+    el('div', { class: 'row-top' }, [
+      el('div', { class: 'row-title', text: row.date }),
+      el('div', { class: 'row-count', text: fmt.format(Number(row.adsStarted || 0)) + ' 条' }),
+    ]),
+    el('p', { class: 'row-text', text: '活跃 ' + (row.activeStarted || 0) + '，停投 ' + (row.inactiveStarted || 0) + '；' + (row.topPages || '-') }),
+    el('p', { class: 'row-text', text: row.topTags || '-' }),
+  ])));
+
+  document.querySelector('#retained-list').replaceChildren(...(deep.retained || []).slice(0, 14).map((row) => el('article', { class: 'winner-row' }, [
+    el('div', { class: 'row-top' }, [
+      el('div', { class: 'row-title', text: row.pageName || row.pageId }),
+      el('div', { class: 'row-count', text: (row.runDays || 0) + ' 天' }),
+    ]),
+    el('p', { class: 'row-text', text: '开始 ' + (row.startDate || '-') + '；同族广告 ' + (row.familyAds || 1) + '；跨主页 ' + (row.familyPageCount || 1) + '；分数 ' + (row.reuseScore || 0) }),
+    el('p', { class: 'row-text', text: (row.bodyText || row.title || row.creativeKey || '').slice(0, 180) }),
+    renderAdLinks((row.sampleAdIds || row.adArchiveId || '').split('|').filter(Boolean).slice(0, 8)),
+  ])));
+
+  document.querySelector('#material-reuse-list').replaceChildren(...(deep.materialReuse || []).slice(0, 14).map((row) => el('article', { class: 'winner-row' }, [
+    el('div', { class: 'row-top' }, [
+      el('div', { class: 'row-title', text: (row.category || '-') + ' / ' + (row.kind || '-') }),
+      el('div', { class: 'row-count', text: '重复 ' + (row.occurrenceCount || 0) + ' 次' }),
+    ]),
+    el('p', { class: 'row-text', text: '覆盖 ' + (row.pageCount || 0) + ' 个主页 / ' + (row.adCount || 0) + ' 个 ad id；已知日期 ' + (row.firstKnownStart || '-') + '~' + (row.lastKnownStart || '-') }),
+    el('p', { class: 'row-text', text: row.representative || row.outputFile || '' }),
+    renderAdLinks((row.sampleAdIds || '').split('|').filter(Boolean).slice(0, 8)),
+  ])));
+
+  document.querySelector('#family-list').replaceChildren(...(deep.families || []).slice(0, 10).map((row) => el('article', { class: 'copy-row' }, [
+    el('div', { class: 'row-top' }, [
+      el('div', { class: 'row-title', text: row.bodyText || row.title || row.familyKey }),
+      el('div', { class: 'row-count', text: (row.familyAds || 0) + ' 条' }),
+    ]),
+    el('p', { class: 'row-text', text: '活跃 ' + (row.activeAds || 0) + '；主页 ' + (row.pageCount || 0) + '；日期 ' + (row.firstStart || '-') + '~' + (row.lastStart || '-') + '；阶段 ' + (row.phaseMix || '-') }),
+    renderAdLinks((row.sampleAdIds || '').split('|').filter(Boolean).slice(0, 8)),
+  ])));
+
+  document.querySelector('#country-caveat').replaceChildren(el('p', {
+    text: '国家覆盖来自 Facebook 广告资料库 country filter 的返回数量，用来观察市场覆盖和活跃/停投结构；它不是单条广告的精准 targeting 字段。'
+  }));
+  const countryList = document.querySelector('#country-list');
+  const countries = deep.countrySummary || [];
+  if (!countries.length) {
+    countryList.replaceChildren(el('article', { class: 'winner-row' }, [
+      el('div', { class: 'row-title', text: '国家过滤器统计尚未完成' }),
+      el('p', { class: 'row-text', text: '脚本会在 page_country_counts.csv 生成后自动显示这里。' }),
+    ]));
+  } else {
+    countryList.replaceChildren(...countries.map((row) => el('article', { class: 'winner-row' }, [
+      el('div', { class: 'row-top' }, [
+        el('div', { class: 'row-title', text: row.pageName || row.pageId }),
+        el('div', { class: 'row-count', text: 'active ' + fmt.format(row.activeAll || 0) }),
+      ]),
+      el('p', { class: 'row-text', text: 'inactive ' + fmt.format(row.inactiveAll || 0) + '；all ' + fmt.format(row.allAll || 0) }),
+      el('p', { class: 'row-text', text: '活跃 top 国家：' + ((row.topActiveCountries || []).map((x) => x.country + ' ' + x.count).join(' / ') || '-') }),
+      el('p', { class: 'row-text', text: '停投 top 国家：' + ((row.topInactiveCountries || []).map((x) => x.country + ' ' + x.count).join(' / ') || '-') }),
+    ])));
+  }
+}
+
 function renderDownloads() {
   const root = document.querySelector('#downloads');
   root.replaceChildren(...data.downloads.map((item) => el('a', { href: item.href, text: item.label })));
@@ -223,4 +314,5 @@ renderPages();
 renderWeekly();
 renderReuse();
 renderApps();
+renderDeep();
 renderDownloads();
