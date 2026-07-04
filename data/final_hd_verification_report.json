@@ -1,0 +1,114 @@
+{
+  "generatedAt": "2026-07-04T03:34:00.212Z",
+  "outputRoot": "/Users/zhenghongjian/Documents/Playground/facebook_ad_library_hd_only/ad_id_deeplink_extra",
+  "thresholds": {
+    "video": "min(width,height) >= 720 and max(width,height) >= 1280",
+    "image": "min(width,height) >= 1080 and max(width,height) >= 1920"
+  },
+  "coverage": {
+    "totalCollectedAdIds": 8862,
+    "uniqueAdIdsQueried": 8862,
+    "finalQueryFailures": 0,
+    "rawQueryRecords": 8872,
+    "historicalFailedAttemptsLaterRetried": 10
+  },
+  "savedFiles": {
+    "videos": 4047,
+    "images": 7179,
+    "byPage": {
+      "1003176282885386": {
+        "collectedAdIds": 72,
+        "queriedAdIds": 72,
+        "finalQueryFailures": 0,
+        "candidateVideos": 70,
+        "candidateImages": 70,
+        "actualHDVideosSaved": 1,
+        "actualHDImagesSaved": 25,
+        "rejectedLowResolutionOrWrongAspect": 0
+      },
+      "1078534272000818": {
+        "collectedAdIds": 16,
+        "queriedAdIds": 16,
+        "finalQueryFailures": 0,
+        "candidateVideos": 16,
+        "candidateImages": 16,
+        "actualHDVideosSaved": 7,
+        "actualHDImagesSaved": 0,
+        "rejectedLowResolutionOrWrongAspect": 0
+      },
+      "1083595128159871": {
+        "collectedAdIds": 4212,
+        "queriedAdIds": 4212,
+        "finalQueryFailures": 0,
+        "candidateVideos": 4069,
+        "candidateImages": 4169,
+        "actualHDVideosSaved": 1798,
+        "actualHDImagesSaved": 3378,
+        "rejectedLowResolutionOrWrongAspect": 174
+      },
+      "1094680553722830": {
+        "collectedAdIds": 669,
+        "queriedAdIds": 669,
+        "finalQueryFailures": 0,
+        "candidateVideos": 649,
+        "candidateImages": 659,
+        "actualHDVideosSaved": 319,
+        "actualHDImagesSaved": 487,
+        "rejectedLowResolutionOrWrongAspect": 27
+      },
+      "899629066577253": {
+        "collectedAdIds": 3893,
+        "queriedAdIds": 3893,
+        "finalQueryFailures": 0,
+        "candidateVideos": 3711,
+        "candidateImages": 3910,
+        "actualHDVideosSaved": 1922,
+        "actualHDImagesSaved": 3289,
+        "rejectedLowResolutionOrWrongAspect": 214
+      }
+    }
+  },
+  "dimensionVerification": {
+    "videosChecked": 4047,
+    "imagesChecked": 7179,
+    "badVideos": 0,
+    "badImages": 0,
+    "videoDimensions": {
+      "720x1280": 3979,
+      "1280x720": 61
+    },
+    "imageDimensions": {
+      "1080x1920": 6991,
+      "1920x1080": 120,
+      "1080x2400": 1
+    },
+    "imageFileTypes": {
+      "JPEG": 7051,
+      "GIF": 42,
+      "PNG": 19
+    }
+  },
+  "notes": [
+    "The raw summary keeps retry history, so historical failed attempts can appear even though finalQueryFailures is 0.",
+    "Some files have .jpg filenames but contain GIF or PNG data returned by Facebook; those were checked with sips and all meet the HD image threshold.",
+    "Files are globally deduplicated by video asset id / image key; duplicate media may not be copied into every page folder."
+  ],
+  "legacyMerge": {
+    "mergedAt": "2026-07-04T03:33:08.039Z",
+    "reportPath": "/Users/zhenghongjian/Documents/Playground/facebook_ad_library_hd_only/ad_id_deeplink_extra/legacy_merge_report.json",
+    "copiedVideos": 7,
+    "copiedImages": 67,
+    "skippedExactDuplicates": 668,
+    "skippedNonHD": 643,
+    "movedToTrash": [
+      {
+        "source": "/Users/zhenghongjian/Documents/Playground/facebook_ad_downloads",
+        "trashPath": "/Users/zhenghongjian/.Trash/facebook_ad_downloads_merged_20260704033308"
+      },
+      {
+        "source": "/Users/zhenghongjian/Documents/Playground/facebook_ad_library_batch",
+        "trashPath": "/Users/zhenghongjian/.Trash/facebook_ad_library_batch_merged_20260704033308"
+      }
+    ]
+  }
+}

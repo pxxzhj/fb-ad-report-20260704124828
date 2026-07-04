@@ -20,11 +20,15 @@ function adUrl(id) {
 
 function renderKpis() {
   const k = data.kpis;
+  const m = data.material;
   const cards = [
-    ['去重广告样本', fmt.format(k.totalAds), k.activeAds + ' 活跃 / ' + k.inactiveAds + ' 已停'],
+    ['素材库 ad id', fmt.format(m.collectedAdIds), '滚动收集后逐条查询/下载'],
+    ['HD 素材文件', fmt.format(m.hdFiles), m.hdVideos + ' 视频 / ' + m.hdImages + ' 图片'],
+    ['去重素材', fmt.format(m.uniqueMediaRepresentatives), '按文件 SHA-256 精确去重'],
+    ['主玩法素材', fmt.format((m.categories.find((x) => x.category === '01_arrows') || {}).count || 0), 'Arrows / arrow maze 类'],
+    ['卡片元数据样本', fmt.format(k.totalAds), 'API 切片 + 浏览器补采，非素材总量'],
     ['主页数量', fmt.format(k.pages), k.earliestStart + ' 至 ' + k.latestStart],
-    ['含视频广告', fmt.format(k.videoAds), percent(k.videoAds, k.totalAds) + ' 的样本含视频素材'],
-    ['停投均值', k.avgInactiveRunDays + ' 天', '短周期素材筛选信号'],
+    ['停投均值', k.avgInactiveRunDays + ' 天', '仅基于卡片元数据样本'],
     ['Android 主包', k.androidMainShare + '%', k.androidMainAds + '/' + k.totalAds + ' 指向 ' + k.androidMainPackage],
     ['爆发周', k.peakWeek.week, k.peakWeek.adsStarted + ' 条上新，' + k.peakWeek.activeStarted + ' 条仍活跃'],
     ['Amaze 测试', fmt.format(k.amaze.ads), k.amaze.activeAds + ' 条仍活跃，最早 ' + k.amaze.firstStart],
@@ -40,14 +44,50 @@ function renderKpis() {
 
 function renderTakeaways() {
   const root = document.querySelector('#takeaways');
+  const m = data.material;
+  const arrows = (m.categories.find((x) => x.category === '01_arrows') || {}).count || 0;
   root.append(el('ul', {}, [
+    el('li', { text: '素材库真实基数是 ' + fmt.format(m.collectedAdIds) + ' 个 ad id、' + fmt.format(m.hdFiles) + ' 个 HD 文件，不是 ' + fmt.format(data.kpis.totalAds) + '。' + fmt.format(data.kpis.totalAds) + ' 只代表卡片元数据样本。' }),
+    el('li', { text: '去重后 ' + fmt.format(m.uniqueMediaRepresentatives) + ' 个素材代表里，' + fmt.format(arrows) + ' 个是 Arrows / arrow maze 主玩法素材，另有真人、其他玩法和不确定素材。' }),
     el('li', { text: '这组主页更像同一个产品集群的多主页矩阵，而不是 6 个独立竞品。' }),
-    el('li', { text: '6 月 29 日周明显批量上新，不是平滑日更；随后快速筛选、保留活跃版本。' }),
-    el('li', { text: 'Arrows 是主线品牌，Amaze 是近期放量测试方向，值得单独跟踪画面变化。' }),
-    el('li', { text: '文案母版高度复用，真正变量更可能在前 3 秒、关卡、主页名、标题和落地链路。' }),
+    el('li', { text: 'Arrows 是主线品牌，Amaze 是近期放量测试方向；具体上新节奏仍需继续补齐大页停投卡片元数据。' }),
   ]));
   document.querySelector('#caveat').append(el('p', { text: data.meta.caveat }));
   document.querySelector('#generated').textContent = '生成时间 ' + new Date(data.meta.generatedAt).toLocaleString('zh-CN');
+}
+
+function renderMaterials() {
+  const m = data.material;
+  const cards = [
+    ['收集 ad id', fmt.format(m.collectedAdIds), m.finalQueryFailures + ' 个最终查询失败'],
+    ['高清视频', fmt.format(m.hdVideos), Object.entries(m.videoDimensions || {}).map(([k, v]) => k + ' x' + v).join(' / ')],
+    ['高清图片', fmt.format(m.hdImages), Object.entries(m.imageDimensions || {}).map(([k, v]) => k + ' x' + v).join(' / ')],
+    ['删除重复', fmt.format(m.removedDuplicateFiles), '精确重复文件未重复计入素材代表'],
+  ];
+  document.querySelector('#material-kpi-grid').replaceChildren(...cards.map(([label, value, note]) => el('div', { class: 'kpi' }, [
+    el('div', { class: 'label', text: label }),
+    el('div', { class: 'value', text: value }),
+    el('div', { class: 'note', text: note }),
+  ])));
+  document.querySelector('#material-caveat').replaceChildren(el('p', { text: m.caveat }));
+  document.querySelector('#material-page-list').replaceChildren(...m.pages.map((page) => el('article', { class: 'winner-row' }, [
+    el('div', { class: 'row-top' }, [
+      el('div', { class: 'row-title', text: page.pageId }),
+      el('div', { class: 'row-count', text: fmt.format(page.collectedAdIds) + ' ad id' }),
+    ]),
+    el('p', { class: 'row-text', text: 'HD 视频 ' + fmt.format(page.actualHDVideosSaved) + '，HD 图片 ' + fmt.format(page.actualHDImagesSaved) + '，候选视频 ' + fmt.format(page.candidateVideos) + '，候选图片 ' + fmt.format(page.candidateImages) }),
+  ])));
+  const maxCat = Math.max(...m.categories.map((x) => x.count));
+  document.querySelector('#material-category-list').replaceChildren(...m.categories.map((cat) => el('article', { class: 'app-row' }, [
+    el('div', { class: 'row-top' }, [
+      el('div', { class: 'row-title', text: cat.category }),
+      el('div', { class: 'row-count', text: fmt.format(cat.count) }),
+    ]),
+    el('p', { class: 'row-text', text: cat.description }),
+    el('div', { class: 'bar-track' }, [
+      el('div', { class: 'bar-active', style: 'width:' + ((cat.count / maxCat) * 100) + '%' }),
+    ]),
+  ])));
 }
 
 function renderPages() {
@@ -168,6 +208,7 @@ function renderDownloads() {
 
 renderKpis();
 renderTakeaways();
+renderMaterials();
 renderPages();
 renderWeekly();
 renderReuse();
